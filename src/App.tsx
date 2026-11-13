@@ -1,25 +1,22 @@
-
-import './App.css'
-import Products from './component/Products'
-import { ProductProvider } from './context/ProductContext'
+import "./App.css";
+import Products from "./component/Products";
 
 function App() {
+  return (
+    <>
+      <header className="site-header">
+        <h1>FakeStore</h1>
+        <p>Válogass a webáruház termékei közül!</p>
+      </header>
 
-  return (<><header>
-    <h1>fakestore</h1>
-    
-  </header>
-  <article>
-    <h2>Product</h2>
-    <p>ide jönnek a termékek.</p>
-    <ProductProvider >
-      <Products />
-    </ProductProvider>
-  </article>
-  <footer>Készítette:Páczi Balázs</footer>
-  </>
-    
-  )
+      <main className="site-main">
+        <h2>Termékek</h2>
+        <Products />
+      </main>
+
+      <footer className="site-footer">Készítette: Páczi Balázs</footer>
+    </>
+  );
 }
 
-export default App
+export default App;
