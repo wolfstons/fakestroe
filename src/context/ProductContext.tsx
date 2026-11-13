@@ -1,50 +1,47 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { productTypes } from "../types/productTipes";
 import { getProducts } from "../service/ProductService";
 
 interface ProductContextType {
   productsList: productTypes[];
-  load:boolean;
-  error:string|null;
-
-
+  load: boolean;
+  error: string | null;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-export function ProductProvider({children}:{children:React.ReactNode}) {
-    const [productsList, setProductsList] = useState<productTypes[]>([]);
-    const [load,setload] =useState<boolean>(true)
-    const [error,setError] =useState<String|null>(null)
+export function ProductProvider({ children }: { children: ReactNode }) {
+  const [productsList, setProductsList] = useState<productTypes[]>([]);
+  const [load, setLoad] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        getProducts().then((data) => {
+  useEffect(() => {
+    getProducts()
+      .then((data) => {
+        setProductsList(data);
+        setError(null);
+      })
+      .catch(() => {
+        setError("Nem sikerült betölteni a termékeket.");
+      })
+      .finally(() => {
+        setLoad(false);
+      });
+  }, []);
 
-            setProductsList(data);
-            setError(null);
-        })
-        .catch(()=>{
-            setError("nem sikerült vetölteni")
-        })
-        .finally(()=>{
-            setload(false)
-        })
-    }, []);
-
-    
-    return (
-       < ProductContext.Provider value={{productsList, load:false, error:null}}>
-        {children}
-       </ProductContext.Provider>
-    )
+  return (
+    <ProductContext.Provider value={{ productsList, load, error }}>
+      {children}
+    </ProductContext.Provider>
+  );
 }
 
 export function useProductContext() {
-    const context = useContext(ProductContext);
-    if (context===undefined){
-        throw new Error("csak a product provideren belül használható")
-    }
+  const context = useContext(ProductContext);
 
+  if (context === undefined) {
+    throw new Error("A useProductContext csak a ProductProvider-en belül használható.");
+  }
 
-    return context;
+  return context;
 }
